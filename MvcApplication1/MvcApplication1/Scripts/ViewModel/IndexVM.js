@@ -34,6 +34,19 @@ var indexVM = {
             $('.avgShipped').html('$' + avgShipped.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
             self.OrderSummaries(data); //Put the response in ObservableArray
             initLineGraph(data);
+            switch (type) {
+                case 0:
+                    $('#title').html('Order Summary, Week Over Week');
+                    break;
+                case 1:
+                    $('#title').html('Order Summary, Month Over Month');
+                    break;
+                case 2:
+                    $('#title').html('Order Summary, Year Over Year');
+                    break;
+                default:
+                    break;
+            }
         },
         error: function (err) {
             alert(err.status + " : " + err.statusText);

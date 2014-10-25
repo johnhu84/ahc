@@ -28,25 +28,25 @@
 
 </style>
 }
-<h4>Order Summary</h4>
-<div class="span4">
+
+<h4 id="title">Order Summary</h4>
+<div class="row-fluid">
+<div class="span2">
                 <div class="well sidebar-nav">
                     <ul class="nav nav-list">
-                        <li><span>@Html.ActionLink("By Week", "Index", new { type = 0 }, new { @class = "typeLink" })</span></li>
-                        <li><span>@Html.ActionLink("By Month", "Index", new { type = 1 }, new { @class = "typeLink" })</span></li>
-                        <li><span>@Html.ActionLink("By Year", "Index", new { type = 2 }, new { @class = "typeLink" })</span></li>
+                        <li><span>@Html.ActionLink("By Week", "Index", new { type = 0 }, new { @class = "typeLink btn btn-link disabled" })</span></li>
+                        <li><span>@Html.ActionLink("By Month", "Index", new { type = 1 }, new { @class = "typeLink btn btn-link" })</span></li>
+                        <li><span>@Html.ActionLink("By Year", "Index", new { type = 2 }, new { @class = "typeLink btn btn-link" })</span></li>
                     </ul>
                 </div>
                 <!--/.well -->
-            </div><br />
-<div class="span4"><p><span class="avgOrdered"></span><label>Average Order Amount</label>&nbsp;<span class="totOrdered"></span><label>Total Order Amount</label>&nbsp;<span class="avgShipped"></span><label>Average Shipped Amount</label>&nbsp;<span class="totShipped"></span><label>Total Shipped Amount</label></p></div>
-<div style="width:80%">
-<div>
+            </div>
+<div class="span2"><p><span class="avgOrdered"></span><label>Average Order Amount</label>&nbsp;<span class="totOrdered"></span><label>Total Order Amount</label>&nbsp;<span class="avgShipped"></span><label>Average Shipped Amount</label>&nbsp;<span class="totShipped"></span><label>Total Shipped Amount</label></p></div>
+<div class="span8">
 <canvas id="canvas" height="600" width="800"></canvas>
 </div>
-</div>
-<div class="table-responsive">
-<table class="table">
+<div class="table-responsive span 8">
+<table class="table table-striped table-bordered">
     <thead>
         <tr>
             <th>Id</th>
@@ -73,11 +73,12 @@
     </tbody>
 </table>
     </div>
+</div>
 <script>
     var randomScalingFactor = function () { return Math.round(Math.random() * 100) };
     function initLineGraph(orderSummaries) {
         var xData = orderSummaries.map(function(d) {
-            return d.PeriodDate;
+            return d.PeriodDate.toDateString();
         });
         var yData = orderSummaries.map(function (d) {
             return d.TotalOrderedAmount;
@@ -135,6 +136,8 @@
                 else if (href.indexOf('/?type=2') >= 0) {
                     indexVM.loadOrderSummaries(2);
                 }
+                $('.typeLink').not(this).removeClass('disabled');
+                $(this).addClass('disabled');
             });
         });
     </script>
