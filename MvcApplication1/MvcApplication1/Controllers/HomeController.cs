@@ -1,10 +1,12 @@
 ﻿using MvcApplication1.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Script.Serialization;
 using System.Xml;
 
 namespace MvcApplication1.Controllers
@@ -86,9 +88,42 @@ namespace MvcApplication1.Controllers
             return orderSummaryList.OrderBy(x => x.PeriodDate).ToList();
         }
 
+        private List<OrderSummary> getOrderSummaries2(int type)
+        {
+            string url = string.Empty;
+            switch (type)
+            {
+                case 0:
+                    url = WeekOverWeek;
+                    break;
+                case 1:
+                    url = MonthOverMonth;
+                    break;
+                case 2:
+                    url = YearOverYear;
+                    break;
+                default:
+                    break;
+            }
+            HttpWebRequest wowRequest = (HttpWebRequest)WebRequest.Create(url);
+            wowRequest.Method = "GET";
+            wowRequest.ContentType = "application/json; charset=utf-8";
+            using (HttpWebResponse wowResponse = (HttpWebResponse)wowRequest.GetResponse())
+            {
+                using (var reader = new StreamReader(wowResponse.GetResponseStream()))
+                {
+                    JavaScriptSerializer js = new JavaScriptSerializer();
+                    var objText = reader.ReadToEnd();
+                    List<OrderSummary> orderSummaries = (List<OrderSummary>)js.Deserialize(objText, typeof(List<OrderSummary>));
+                    return orderSummaries;
+                }
+            }
+        }
+
         public JsonResult FillIndex(int type = 0)
         {
-            return Json(getOrderSummaries(type), JsonRequestBehavior.AllowGet);
+            //return Json(getOrderSummaries(type), JsonRequestBehavior.AllowGet);
+            return Json(getOrderSummaries2(type), JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult About()
